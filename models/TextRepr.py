@@ -8,13 +8,13 @@ from transformers import BertModel, BertTokenizer
 from sentence_transformers import SentenceTransformer, models
 
 
-class Pooling(nn.Module):
+class TextRepr(nn.Module):
     def __init__(self, encoder, mode='mean'):
         """
         :param encoder: 预训练模型
         :param mode: 向量抽取策略：mean，max，cls
         """
-        super(Pooling, self).__init__()
+        super(TextRepr, self).__init__()
         self.encoder = encoder
         self.mode = mode
 
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     texts = ['我是江峰', '我是郭峰', '我是李四', '我是江']
     encoder = tokenizer(texts, return_tensors='pt', padding=True)
     token_ids, attention_mask = encoder['input_ids'], encoder['attention_mask']
-    pool = Pooling(encoder=bert_model, mode='mean')
+    pool = TextRepr(encoder=bert_model, mode='mean')
     features = pool(token_ids, attention_mask)
     print(features)
 
