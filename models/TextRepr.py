@@ -41,7 +41,7 @@ if __name__ == '__main__':
     bert_model_path = '/tmp/chinese-roberta-wwm-ext'
     bert_model = BertModel.from_pretrained(bert_model_path)
     tokenizer = BertTokenizer.from_pretrained(bert_model_path)
-    texts = ['我是江峰', '我是郭峰', '我是李四', '我是江']
+    texts = ['我是李四', '我是张三']
     encoder = tokenizer(texts, return_tensors='pt', padding=True)
     token_ids, attention_mask = encoder['input_ids'], encoder['attention_mask']
     pool = TextRepr(encoder=bert_model, mode='mean')
