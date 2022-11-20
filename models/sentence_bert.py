@@ -6,7 +6,7 @@ import torch
 from torch import nn
 from transformers import BertModel, BertTokenizer
 
-from models.text_repr import TextRepr
+from models.sentence_repr import TextRepr
 
 
 class SentenceBert(nn.Module):
