@@ -26,7 +26,7 @@ class BQDataset(data.Dataset):
             a_text = a_text[:self.max_seq_len]
         if len(b_text) > self.max_seq_len:
             b_text = b_text[:self.max_seq_len]
-        return a_text, b_text, label
+        return a_text, b_text, int(label)
 
     def __len__(self):
         return len(self.datas)
