@@ -18,8 +18,9 @@ class SentenceBert(nn.Module):
     def forward(self, a_token_ids, a_attention_mask, b_token_ids, b_attention_mask):
         a_token_embeddings = self.textRepr(a_token_ids, a_attention_mask)
         b_token_embeddings = self.textRepr(b_token_ids, b_attention_mask)
-        features = torch.concat([a_token_embeddings, b_token_embeddings, a_token_embeddings - b_token_embeddings],
-                                dim=1)
+        features = torch.concat(
+            [a_token_embeddings, b_token_embeddings, torch.abs(a_token_embeddings - b_token_embeddings)],
+            dim=1)
         logits = self.fc(features)
         return logits
 
@@ -39,3 +40,7 @@ if __name__ == '__main__':
     sbert = SentenceBert(encoder=bert_model)
     logits = sbert(a_token_ids, a_attention_mask, b_token_ids, b_attention_mask)
     print(logits)
+    a = torch.ones(size=(4, 5))
+    b = torch.ones(size=(4, 5)) * -1
+    c = torch.abs(a - b)
+    print(c)
