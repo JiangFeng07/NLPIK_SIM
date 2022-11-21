@@ -5,7 +5,6 @@
 import torch
 from torch import nn
 from transformers import BertModel, BertTokenizer
-from sentence_transformers import SentenceTransformer, models
 
 
 class TextRepr(nn.Module):
@@ -47,9 +46,3 @@ if __name__ == '__main__':
     pool = TextRepr(encoder=bert_model, mode='mean')
     features = pool(token_ids, attention_mask)
     print(features)
-
-    word_embedding_model = models.Transformer(bert_model_path, max_seq_length=128)
-    pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension(), pooling_mode='mean')
-    model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
-    a = model.encode(texts)
-    print(a)

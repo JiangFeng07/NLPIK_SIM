@@ -9,7 +9,7 @@ import torch
 from tqdm import tqdm
 from transformers import BertTokenizer, BertModel, AdamW, get_linear_schedule_with_warmup
 
-from datasets.BQDataset import BQDataset
+from datasets.bq_dataset import BQDataset
 from torch.utils import data
 
 from models.sentence_bert import SentenceBert
@@ -23,10 +23,10 @@ def collect_fn(batch):
     a_token_ids, a_attention_mask = a_outputs['input_ids'], a_outputs['attention_mask']
     b_outputs = tokenizer(b_texts, return_tensors='pt', padding=True)
     b_token_ids, b_attention_mask = b_outputs['input_ids'], b_outputs['attention_mask']
-    a_token_ids.to(device)
-    a_attention_mask.to(device)
-    b_token_ids.to(device)
-    b_attention_mask.to(device)
+    a_token_ids = a_token_ids.to(device)
+    a_attention_mask = a_attention_mask.to(device)
+    b_token_ids = b_token_ids.to(device)
+    b_attention_mask = b_attention_mask.to(device)
     labels = torch.LongTensor(labels).to(device)
     return a_token_ids, a_attention_mask, b_token_ids, b_attention_mask, labels
 
@@ -53,13 +53,11 @@ def metric(valid_loader, model):
 
 def train():
     train_dataset = BQDataset(os.path.join(args.file_path, 'train.tsv'))
-    train_loader = data.DataLoader(train_dataset, batch_size=10, collate_fn=collect_fn)
-
+    train_loader = data.DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, collate_fn=collect_fn)
     valid_dataset = BQDataset(os.path.join(args.file_path, 'dev.tsv'))
-    valid_loader = data.DataLoader(valid_dataset, batch_size=10, collate_fn=collect_fn)
-
+    valid_loader = data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=collect_fn)
     bert_model = BertModel.from_pretrained(args.bert_model_path)
-    model = SentenceBert(encoder=bert_model)
+    model = SentenceBert(encoder=bert_model).to(device)
     optimizer = AdamW(model.parameters(), lr=2e-5, correct_bias=False)
     total_steps = len(train_loader) * args.epochs
     scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=total_steps)
@@ -99,10 +97,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--file_path', help='训练数据路径', type=str, default='/tmp/bq_corpus/')
     parser.add_argument('--bert_model_path', help='预训练模型路径', type=str, default='/tmp/chinese-roberta-wwm-ext')
-    parser.add_argument('--epochs', help='训练轮数', type=int, default=1)
+    parser.add_argument('--epochs', help='训练轮数', type=int, default=5)
     parser.add_argument('--dropout', help='', type=float, default=0.5)
     parser.add_argument('--embedding_size', help='', type=int, default=100)
-    parser.add_argument('--batch_size', help='', type=int, default=100)
+    parser.add_argument('--batch_size', help='', type=int, default=32)
     parser.add_argument('--hidden_size', help='', type=int, default=200)
     parser.add_argument('--num_layers', help='', type=int, default=1)
     parser.add_argument('--lr', help='学习率', type=float, default=1e-3)
