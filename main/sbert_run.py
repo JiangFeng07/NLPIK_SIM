@@ -60,7 +60,8 @@ def train():
     model = SentenceBert(encoder=bert_model).to(device)
     optimizer = AdamW(model.parameters(), lr=2e-5, correct_bias=False)
     total_steps = len(train_loader) * args.epochs
-    scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=total_steps)
+    scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=args.warm_up_ratio * total_steps,
+                                                num_training_steps=total_steps)
     best_f1_score = 0.0
     early_epochs = 0
     for epoch in range(args.epochs):
@@ -99,6 +100,7 @@ if __name__ == '__main__':
     parser.add_argument('--bert_model_path', help='预训练模型路径', type=str, default='/tmp/chinese-roberta-wwm-ext')
     parser.add_argument('--epochs', help='训练轮数', type=int, default=100)
     parser.add_argument('--dropout', help='', type=float, default=0.5)
+    parser.add_argument('--warm_up_ratio', help='', type=float, default=0.1)
     parser.add_argument('--embedding_size', help='', type=int, default=100)
     parser.add_argument('--batch_size', help='', type=int, default=32)
     parser.add_argument('--hidden_size', help='', type=int, default=200)
