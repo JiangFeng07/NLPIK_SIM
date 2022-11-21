@@ -65,7 +65,7 @@ def train():
     early_epochs = 0
     for epoch in range(args.epochs):
         model.train()
-        with tqdm(total=len(train_loader), desc='模型训练进度条') as pbar:
+        with tqdm(total=len(train_loader), desc='Epoch：%d，模型训练进度条' % epoch) as pbar:
             for batch_idx, batch in enumerate(train_loader):
                 a_token_ids, a_attention_mask, b_token_ids, b_attention_mask, labels = batch
                 optimizer.zero_grad()
