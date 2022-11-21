@@ -87,8 +87,8 @@ def train():
             else:
                 early_epochs += 1
 
-            if early_epochs > 3:  # 连续三个epoch，验证集f1_score没有提升，训练结束
-                print('验证集f1_score连续三个epoch没有提升，训练结束')
+            if early_epochs > 7:  # 连续7个epoch，验证集f1_score没有提升，训练结束
+                print('验证集f1_score连续7个epoch没有提升，训练结束')
                 break
         print('\n')
 
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--file_path', help='训练数据路径', type=str, default='/tmp/bq_corpus/')
     parser.add_argument('--bert_model_path', help='预训练模型路径', type=str, default='/tmp/chinese-roberta-wwm-ext')
-    parser.add_argument('--epochs', help='训练轮数', type=int, default=5)
+    parser.add_argument('--epochs', help='训练轮数', type=int, default=100)
     parser.add_argument('--dropout', help='', type=float, default=0.5)
     parser.add_argument('--embedding_size', help='', type=int, default=100)
     parser.add_argument('--batch_size', help='', type=int, default=32)
