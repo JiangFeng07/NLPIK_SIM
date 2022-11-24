@@ -39,8 +39,3 @@ if __name__ == '__main__':
 
     sbert = SentenceBert(encoder=bert_model)
     logits = sbert(a_token_ids, a_attention_mask, b_token_ids, b_attention_mask)
-    print(logits)
-    a = torch.ones(size=(4, 5))
-    b = torch.ones(size=(4, 5)) * -1
-    c = torch.abs(a - b)
-    print(c)
