@@ -83,8 +83,4 @@ if __name__ == '__main__':
     bert_model = BertModel.from_pretrained(bert_model_path)
     texts = ['我是李四', '我是张三']
     encoder = tokenizer(texts, return_tensors='pt', padding=True)
-    token_ids, attention_mask = encoder['input_ids'], encoder['attention_mask']
-    pool = TextRepr(encoder=bert_model, mode='mean')
-    features = pool(token_ids, attention_mask)
-
     get_global_data_mean_cov()
